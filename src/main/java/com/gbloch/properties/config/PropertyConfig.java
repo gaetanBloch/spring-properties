@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.env.Environment;
 
 /**
  * <br>
@@ -18,17 +19,24 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 @Configuration
 @PropertySource("classpath:datasource.properties")
 class PropertyConfig {
+
+    private final Environment environment;
+
     @Value("${gbloch.username}")
-    String user;
+    private String user;
     @Value("${gbloch.password}")
-    String password;
+    private String password;
     @Value("${gbloch.dburl}")
-    String url;
+    private String url;
+
+    PropertyConfig(Environment environment) {
+        this.environment = environment;
+    }
 
     @Bean
     FakeDataSource dataSource() {
         return FakeDataSource.builder()
-                .user(user)
+                .user(environment.getProperty("username"))
                 .password(password)
                 .url(url)
                 .build();
