@@ -33,10 +33,6 @@ class PropertyConfig {
         this.environment = environment;
     }
 
-    PropertyConfig(Environment environment) {
-        this.environment = environment;
-    }
-
     @Bean
     FakeDataSource dataSource() {
         return FakeDataSource.builder()
