@@ -1,6 +1,7 @@
 package com.gbloch.properties;
 
 import com.gbloch.properties.data.FakeDataSource;
+import com.gbloch.properties.data.FakeJmsBroker;
 import com.gbloch.properties.data.FauxDataSource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,5 +23,11 @@ public class SpringPropertiesApplication {
         System.out.println(fauxDataSource.getUser());
         System.out.println(fauxDataSource.getPassword());
         System.out.println(fauxDataSource.getUrl());
+
+        System.out.println("------- JMS Properties");
+        FakeJmsBroker jmsBroker = ctx.getBean(FakeJmsBroker.class);
+        System.out.println(jmsBroker.getUser());
+        System.out.println(jmsBroker.getPassword());
+        System.out.println(jmsBroker.getUrl());
     }
 }

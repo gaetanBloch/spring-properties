@@ -1,10 +1,12 @@
 package com.gbloch.properties.config;
 
 import com.gbloch.properties.data.FakeDataSource;
+import com.gbloch.properties.data.FakeJmsBroker;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 
@@ -17,7 +19,15 @@ import org.springframework.core.env.Environment;
  * @since 1.0
  */
 @Configuration
-@PropertySource("classpath:datasource.properties")
+// Different ways to import property sources
+@PropertySource({
+        "classpath:datasource.properties",
+        "classpath:jms.properties"
+})
+@PropertySources({
+        @PropertySource("classpath:datasource.properties"),
+        @PropertySource("classpath:jms.properties")
+})
 class PropertyConfig {
 
     private final Environment environment;
@@ -29,8 +39,20 @@ class PropertyConfig {
     @Value("${gbloch.dburl}")
     private String url;
 
+    @Value("${gbloch.jms.username}")
+    private String jmsUser;
+    @Value("${gbloch.jms.password}")
+    private String jmsPassword;
+    @Value("${gbloch.jms.url}")
+    private String jmsUrl;
+
     PropertyConfig(Environment environment) {
         this.environment = environment;
+    }
+
+    @Bean
+    static PropertySourcesPlaceholderConfigurer properties() {
+        return new PropertySourcesPlaceholderConfigurer();
     }
 
     @Bean
@@ -43,7 +65,11 @@ class PropertyConfig {
     }
 
     @Bean
-    static PropertySourcesPlaceholderConfigurer properties() {
-        return new PropertySourcesPlaceholderConfigurer();
+    FakeJmsBroker jmsBroker() {
+        return FakeJmsBroker.builder()
+                .user(jmsUser)
+                .password(jmsPassword)
+                .url(jmsUrl)
+                .build();
     }
 }
